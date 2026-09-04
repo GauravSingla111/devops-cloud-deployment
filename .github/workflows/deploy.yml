@@ -1,0 +1,36 @@
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t devops-demo:ci .
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name devops-demo \
+            -p 8080:8080 \
+            devops-demo:ci
+
+      - name: Health check
+        run: |
+          sleep 5
+          curl --fail http://localhost:8080/health
+
+      - name: Show container logs
+        if: always()
+        run: docker logs devops-demo
