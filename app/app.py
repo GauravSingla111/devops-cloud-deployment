@@ -13,8 +13,8 @@ def home():
             <title>DevOps Cloud Deployment Demo</title>
         </head>
         <body>
-            <h1>DevOps Cloud Deployment Demo</h1>
-            <p>Status: Running</p>
+            <h1>DevOps Cloud Deployment Demo - version 2</h1>
+            <p>Status: Running - version 2</p>
             <p>Environment: {os.getenv("ENVIRONMENT", "development")}</p>
             <p>Hostname: {socket.gethostname()}</p>
         </body>
