@@ -1,0 +1,34 @@
+$Image = "ghcr.io/gauravsingla111/devops-cloud-deployment:latest"
+$Container = "devops-demo"
+
+Write-Host "=== Deploying $Image ==="
+
+Write-Host "Stopping existing container..."
+docker rm -f $Container 2>$null
+
+Write-Host "Pulling latest image..."
+docker pull $Image
+
+Write-Host "Starting container..."
+docker run -d `
+    --name $Container `
+    -p 8080:8080 `
+    $Image
+
+Write-Host "Waiting for application..."
+Start-Sleep -Seconds 5
+
+Write-Host "Running health check..."
+$response = Invoke-WebRequest `
+    -Uri "http://localhost:8080/health" `
+    -UseBasicParsing
+
+if ($response.StatusCode -eq 200) {
+    Write-Host "Deployment successful!"
+    Write-Host $response.Content
+}
+else {
+    Write-Host "Health check failed!"
+    docker logs $Container
+    exit 1
+}
